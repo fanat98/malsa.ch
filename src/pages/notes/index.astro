@@ -1,0 +1,122 @@
+---
+import "../../styles/global.css";
+
+type NoteModule = {
+  frontmatter: {
+    title: string;
+    description: string;
+    pubDate: Date;
+    draft?: boolean;
+  };
+};
+
+const noteModules = import.meta.glob("../../content/notes/*.md", { eager: true });
+const sortedNotes = Object.entries(noteModules)
+  .map(([path, note]) => {
+    const module = note as NoteModule;
+    const slug = path.split("/").pop()?.replace(".md", "") ?? "";
+
+    return {
+      slug,
+      ...module.frontmatter,
+      pubDate: new Date(module.frontmatter.pubDate),
+    };
+  })
+  .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Notes - Aslam Idrisov</title>
+    <meta name="description" content="Technical notes and draft articles by Aslam Idrisov." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      (() => {
+        const storageKey = "malsa-theme";
+        const preferredTheme = () => (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        const setTheme = (theme) => {
+          document.documentElement.dataset.theme = theme;
+        };
+
+        try {
+          setTheme(localStorage.getItem(storageKey) || preferredTheme());
+        } catch {
+          setTheme(preferredTheme());
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+          const button = document.querySelector("[data-theme-toggle]");
+          const updateButton = () => {
+            const isDark = document.documentElement.dataset.theme === "dark";
+            button?.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+            button?.setAttribute("title", isDark ? "Switch to light mode" : "Switch to dark mode");
+          };
+
+          updateButton();
+          button?.addEventListener("click", () => {
+            const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+            setTheme(nextTheme);
+            localStorage.setItem(storageKey, nextTheme);
+            updateButton();
+          });
+        });
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Aslam Idrisov home">
+        <span class="brand-mark">AI</span>
+        <span>Aslam Idrisov</span>
+      </a>
+      <div class="header-actions">
+        <nav class="nav" aria-label="Main navigation">
+          <a href="/#experience">Experience</a>
+          <a href="/#skills">Skills</a>
+          <a href="/notes/">Notes</a>
+          <a href="https://github.com/fanat98" rel="noreferrer">GitHub</a>
+          <a href="/#contact">Contact</a>
+        </nav>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="2">
+            <path d="M20 14.4A7.2 7.2 0 0 1 9.6 4a8.2 8.2 0 1 0 10.4 10.4Z"></path>
+          </svg>
+          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="2">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="notes-page">
+      <section class="section">
+        <div class="section-label">Notes</div>
+        <h1>Technical notes and draft articles.</h1>
+        <p class="page-copy">
+          A small place for practical thoughts on backend engineering, security, DevOps and maintainable web platforms.
+        </p>
+        <div class="notes-grid notes-grid-page">
+          {
+            sortedNotes.map((note) => (
+              <a class="note-card" href={`/notes/${note.slug}/`}>
+                <p class="note-meta">{note.draft ? "Draft" : "Article"}</p>
+                <h3>{note.title}</h3>
+                <p>{note.description}</p>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

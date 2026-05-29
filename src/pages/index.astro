@@ -1,0 +1,361 @@
+---
+import "../styles/global.css";
+
+const links = {
+  github: "https://github.com/fanat98",
+  linkedin: "https://www.linkedin.com/in/aslam-idrisov-ab3b0753/",
+  email: "mailto:aslam@malsa.ch",
+};
+
+const heroFacts = [
+  ["Current", "Software Engineer Security DWH / Security Champion"],
+  ["Based in", "Bern, Switzerland 🇨🇭"],
+  ["Core stack", "Stone age: Laravel, Symfony, Docker, Kubernetes, AWS. Today: anything with AI."],
+];
+
+const timeline = [
+  {
+    period: "2023 - now",
+    title: "Software Engineer Security DWH",
+    company: "Swisscom, Bern",
+    current: true,
+    points: [
+      "Development and operation of web applications in a security-focused data warehouse environment.",
+      "Security Champion responsibilities, DevOps process ownership, incident response and risk management.",
+    ],
+  },
+  {
+    period: "2021 - 2023",
+    title: "DevOps Engineer",
+    company: "visol, Kriens / Bern",
+    points: [
+      "Development and maintenance of web applications with operational responsibility.",
+      "Delivery support for implementation projects and stable DevOps workflows.",
+    ],
+  },
+  {
+    period: "2020 - 2021",
+    title: "Application Developer",
+    company: "Pädagogische Hochschule PHBern, Bern",
+    points: [
+      "Development and operation of web applications and APIs for PHBern.",
+      "Business analysis, implementation concepts and useful system documentation.",
+    ],
+  },
+  {
+    period: "2015 - 2020",
+    title: "Banking Software Engineer",
+    company: "Swisscom, Gümligen / Ittigen",
+    points: [
+      "Development and maintenance of web applications in banking software environments.",
+      "DevOps responsibility and contribution to implementation projects.",
+    ],
+  },
+  {
+    period: "2010 - 2015",
+    title: "Web Developer",
+    company: "BTW communications AG and Flex-IT",
+    points: [
+      "Web applications, client projects, project coordination and technical support.",
+      "PHP, MySQL, CSS, HTML, CMS work and infrastructure maintenance.",
+    ],
+  },
+];
+
+const skills = [
+  {
+    area: "Backend",
+    title: "Security-aware PHP platforms",
+    text: "Laravel, Symfony, API design, application architecture and backend work with security in mind.",
+    tags: ["Laravel", "Symfony", "PHP", "API Security"],
+  },
+  {
+    area: "CMS",
+    title: "Content systems",
+    text: "TYPO3 and Neos projects with structured content, editorial workflows and long-term maintainability.",
+    tags: ["TYPO3", "Neos", "Flow"],
+  },
+  {
+    area: "Frontend",
+    title: "Product interfaces",
+    text: "Interactive UI work with JavaScript, Vue and React, connected to practical backend realities.",
+    tags: ["Vue", "React", "JavaScript"],
+  },
+  {
+    area: "Operations",
+    title: "DevOps and automation",
+    text: "Docker, Kubernetes, Ansible, AWS, GitLab CI, Linux and deployment habits that make systems easier to run and debug.",
+    tags: ["Docker", "Kubernetes", "Ansible", "AWS", "GitLab CI", "Linux", "Git"],
+  },
+];
+
+const education = [
+  ["01", "ICT Application Developer", "IFA Höhere Fachschule, 2016 - 2018."],
+  ["02", "Web Programmer PHP", "Schule für Weiterbildung Zürich, 2013 - 2014."],
+  ["03", "Computer Scientist EFZ", "Computerschule Bern, 2008 - 2013, application development focus."],
+];
+
+const notes = [
+  {
+    meta: "Architecture / Draft",
+    title: "What I look for in a maintainable Laravel project",
+    text: "Short technical notes, useful patterns and pragmatic decisions from real project work.",
+    href: "/notes/maintainable-laravel/",
+  },
+  {
+    meta: "DevOps / Draft",
+    title: "Docker setups that stay friendly after month six",
+    text: "A place for practical lessons about local environments, CI and deployments.",
+    href: "/notes/docker-setups/",
+  },
+  {
+    meta: "Security / Draft",
+    title: "Security-conscious backend development in practice",
+    text: "Notes on pragmatic security work, risk thinking and secure delivery habits.",
+    href: "/notes/security-conscious-backend/",
+  },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aslam Idrisov - Software Engineer</title>
+    <meta
+      name="description"
+      content="Personal website and CV of Aslam Idrisov, Software Engineer focused on web platforms, DevOps, security and data systems."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      (() => {
+        const storageKey = "malsa-theme";
+        const preferredTheme = () => (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        const setTheme = (theme) => {
+          document.documentElement.dataset.theme = theme;
+        };
+
+        try {
+          setTheme(localStorage.getItem(storageKey) || preferredTheme());
+        } catch {
+          setTheme(preferredTheme());
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+          const button = document.querySelector("[data-theme-toggle]");
+          const updateButton = () => {
+            const isDark = document.documentElement.dataset.theme === "dark";
+            button?.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+            button?.setAttribute("title", isDark ? "Switch to light mode" : "Switch to dark mode");
+          };
+
+          updateButton();
+          button?.addEventListener("click", () => {
+            const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+            setTheme(nextTheme);
+            localStorage.setItem(storageKey, nextTheme);
+            updateButton();
+          });
+        });
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Aslam Idrisov home">
+        <span class="brand-mark">AI</span>
+        <span>Aslam Idrisov</span>
+      </a>
+
+      <div class="header-actions">
+        <nav class="nav" aria-label="Main navigation">
+          <a href="#experience">Experience</a>
+          <a href="#skills">Skills</a>
+          <a href="#notes">Notes</a>
+          <a href={links.github} rel="noreferrer">GitHub</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="2">
+            <path d="M20 14.4A7.2 7.2 0 0 1 9.6 4a8.2 8.2 0 1 0 10.4 10.4Z"></path>
+          </svg>
+          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="2">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-media" aria-hidden="true"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-inner">
+          <div class="hero-content">
+            <p class="eyebrow">Software Engineer / Web Platforms / DevOps</p>
+            <h1>Building reliable web systems with a pragmatic engineering mindset.</h1>
+            <p class="hero-copy">
+              I work across backend platforms, frontend interfaces, CMS ecosystems and infrastructure, with current focus on security, data warehouse engineering and Security Champion responsibilities at Swisscom.
+            </p>
+
+            <div class="hero-actions" aria-label="Profile actions">
+              <a class="button primary" href="#experience">View CV</a>
+              <a class="button secondary" href={links.github} rel="noreferrer">GitHub</a>
+              <a class="button secondary" href="#notes">Read notes</a>
+            </div>
+
+            <dl class="hero-facts">
+              {
+                heroFacts.map(([label, value]) => (
+                  <div>
+                    <dt>{label}</dt>
+                    <dd>{value}</dd>
+                  </div>
+                ))
+              }
+            </dl>
+          </div>
+
+          <figure class="hero-portrait">
+            <img src="/assets/aslam-idrisov.jpg" alt="Portrait of Aslam Idrisov" />
+            <figcaption>
+              <span>Aslam Idrisov</span>
+              <strong>Software Engineer</strong>
+              <small>Bern area / Web, DevOps, Security Champion</small>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="intro section">
+        <div class="section-label">Profile</div>
+        <div class="intro-grid">
+          <h2>Security-conscious web engineering, from product code to deployment pipelines.</h2>
+          <p>
+            I have worked across PHP platforms, CMS projects, banking software, educational web applications and DevOps responsibilities. Today my focus is on security-conscious backend development, secure data warehouse systems, web application operations, incident response, risk management and Security Champion work.
+          </p>
+        </div>
+      </section>
+
+      <section class="section split-section" id="experience">
+        <div>
+          <div class="section-label">Experience</div>
+          <h2>Timeline</h2>
+          <p class="section-copy">
+            Compact enough for recruiters, detailed enough for technical people who want to understand your path.
+          </p>
+        </div>
+
+        <div class="timeline">
+          {
+            timeline.map((item) => (
+              <article class:list={["timeline-item", { current: item.current }]}>
+                <span class="period">{item.period}</span>
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{item.company}</p>
+                  <ul>
+                    {item.points.map((point) => <li>{point}</li>)}
+                  </ul>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="section" id="skills">
+        <div class="section-heading">
+          <div>
+            <div class="section-label">Capabilities</div>
+            <h2>Grouped by practical use, not percentage bars.</h2>
+          </div>
+          <p>
+            Your CV contains a broad stack; this version presents it as practical engineering areas, including security-aware backend work and infrastructure automation.
+          </p>
+        </div>
+
+        <div class="skill-grid">
+          {
+            skills.map((skill) => (
+              <article class="skill-card">
+                <span class="skill-kicker">{skill.area}</span>
+                <h3>{skill.title}</h3>
+                <p>{skill.text}</p>
+                <div class="tags">
+                  {skill.tags.map((tag) => <span>{tag}</span>)}
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="section work-section">
+        <div class="section-heading">
+          <div>
+            <div class="section-label">Education</div>
+            <h2>Professional training with a software engineering focus.</h2>
+          </div>
+          <p>
+            A compact section for qualifications without turning the website into a full PDF CV.
+          </p>
+        </div>
+
+        <div class="work-list">
+          {
+            education.map(([number, title, text]) => (
+              <article>
+                <span>{number}</span>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="section notes-section" id="notes">
+        <div class="section-heading">
+          <div>
+            <div class="section-label">Notes</div>
+            <h2>A lightweight blog that can grow naturally.</h2>
+          </div>
+          <a class="text-link" href="#contact">Suggest a topic</a>
+        </div>
+
+        <div class="notes-grid">
+          {
+            notes.map((note) => (
+              <a class="note-card" href={note.href}>
+                <p class="note-meta">{note.meta}</p>
+                <h3>{note.title}</h3>
+                <p>{note.text}</p>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="section contact-section" id="contact">
+        <div>
+          <div class="section-label">Contact</div>
+          <h2>Open to technical conversations, ideas and good engineering problems.</h2>
+        </div>
+        <div class="contact-actions">
+          <a class="button primary" href={links.email}>aslam@malsa.ch</a>
+          <a class="button secondary" href={links.github} rel="noreferrer">GitHub</a>
+          <a class="button secondary" href={links.linkedin} rel="noreferrer">LinkedIn</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
