@@ -1,0 +1,169 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>What I look for in a maintainable Laravel project - Aslam Idrisov</title><meta name="description" content="Practical thoughts on structure, business logic, queues, security and operating Laravel projects over time."><link rel="icon" href="/favicon.svg" type="image/svg+xml"><script>
+      (() => {
+        const storageKey = "malsa-theme";
+        const preferredTheme = () => (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        const setTheme = (theme) => {
+          document.documentElement.dataset.theme = theme;
+        };
+
+        try {
+          setTheme(localStorage.getItem(storageKey) || preferredTheme());
+        } catch {
+          setTheme(preferredTheme());
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+          const button = document.querySelector("[data-theme-toggle]");
+          const updateButton = () => {
+            const isDark = document.documentElement.dataset.theme === "dark";
+            button?.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+            button?.setAttribute("title", isDark ? "Switch to light mode" : "Switch to dark mode");
+          };
+
+          updateButton();
+          button?.addEventListener("click", () => {
+            const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+            setTheme(nextTheme);
+            localStorage.setItem(storageKey, nextTheme);
+            updateButton();
+          });
+        });
+      })();
+    </script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"><!-- Matomo --><script>
+  var _paq = (window._paq = window._paq || []);
+  _paq.push(["trackPageView"]);
+  _paq.push(["enableLinkTracking"]);
+  (function () {
+    var u = "https://analytics.malsa.ch/";
+    _paq.push(["setTrackerUrl", u + "matomo.php"]);
+    _paq.push(["setSiteId", "7"]);
+    var d = document;
+    var g = d.createElement("script");
+    var s = d.getElementsByTagName("script")[0];
+    g.async = true;
+    g.src = u + "matomo.js";
+    s.parentNode.insertBefore(g, s);
+  })();
+</script> <!-- End Matomo Code --><link rel="stylesheet" href="/_astro/Matomo.wDFnqjWY.css"></head> <body> <header class="site-header"> <a class="brand" href="/" aria-label="Aslam Idrisov home"> <span class="brand-mark">AI</span> <span>Aslam Idrisov</span> </a> <div class="header-actions"> <nav class="nav" aria-label="Main navigation"> <a href="/#experience">Experience</a> <a href="/#skills">Skills</a> <a href="/notes/">Notes</a> <a href="https://github.com/fanat98" rel="noreferrer">GitHub</a> <a href="/#contact">Contact</a> </nav> <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle dark mode" title="Toggle dark mode"> <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="2"> <path d="M20 14.4A7.2 7.2 0 0 1 9.6 4a8.2 8.2 0 1 0 10.4 10.4Z"></path> </svg> <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="2"> <circle cx="12" cy="12" r="4"></circle> <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"></path> </svg> </button> </div> </header> <main class="article-page"> <article class="article"> <a class="text-link article-back" href="/notes/">Back to notes</a> <p class="note-meta">Article</p> <h1>What I look for in a maintainable Laravel project</h1> <p class="page-copy">Practical thoughts on structure, business logic, queues, security and operating Laravel projects over time.</p> <div class="article-body"> <p>A Laravel project is easy to start. That is one of the reasons I like the framework. You can build something useful quickly, ship features, connect a database, add queues, write jobs, expose APIs and move forward without fighting the framework too much.</p>
+<p>But the real question is not how fast a Laravel project can start.</p>
+<p>The real question is: how does it feel after six months, two years, several developers, changing requirements, production incidents, forgotten edge cases and one or two urgent fixes on a Friday afternoon?</p>
+<p>That is where maintainability starts to matter.</p>
+<p>For me, a maintainable Laravel project is not about using every pattern perfectly. It is not about making the code look clever. It is about building a system that another developer — or myself in three months — can understand, change and operate without fear.</p>
+<h2 id="clear-structure-before-clever-abstraction">Clear structure before clever abstraction</h2>
+<p>I like structure, but I am careful with abstraction.</p>
+<p>In Laravel, it is very easy to put everything into controllers, models or jobs. It works at the beginning, but after a while the project becomes harder to reason about. A controller becomes too large. A model starts to contain business rules, query logic, formatting, side effects and sometimes even external API calls.</p>
+<p>On the other side, too much abstraction can also hurt. A small feature does not always need ten classes, three interfaces and a service provider.</p>
+<p>What I usually look for is a simple structure where responsibilities are visible:</p>
+<ul>
+<li>controllers handle the HTTP layer</li>
+<li>form requests validate input</li>
+<li>actions or services contain business operations</li>
+<li>jobs handle asynchronous work</li>
+<li>policies protect access</li>
+<li>resources or DTOs shape output</li>
+<li>models stay focused on data relationships and useful domain behaviour</li>
+</ul>
+<p>The exact names are less important than the intention. When I open a project, I want to understand where a change belongs.</p>
+<p>Good structure should reduce thinking, not increase it.</p>
+<h2 id="business-logic-should-have-a-home">Business logic should have a home</h2>
+<p>One of the first things I check in a Laravel project is where the business logic lives.</p>
+<p>If important decisions are hidden inside Blade templates, controllers, observers or random model methods, the project becomes fragile. It becomes harder to test and easier to break.</p>
+<p>I prefer business logic to have a clear home. Sometimes that is a service class. Sometimes an action class. Sometimes a small domain object. Sometimes a well-named method on a model is enough.</p>
+<p>The important part is that the rule is discoverable.</p>
+<p>For example, if an import process decides whether a record should be created, updated, skipped or marked as failed, I do not want that logic spread across the controller, the job and the model. I want to see the flow clearly.</p>
+<p>A maintainable project makes important decisions easy to find.</p>
+<h2 id="queues-need-respect">Queues need respect</h2>
+<p>Queues are powerful, but they are also one of the places where Laravel projects can become difficult to operate.</p>
+<p>A job that works perfectly with ten records can behave very differently with 500,000 records. Long-running imports, mail jobs, notifications, retries, failed jobs and scheduled tasks should not all be treated the same.</p>
+<p>When I look at queue design, I ask questions like:</p>
+<ul>
+<li>Can this job safely run twice?</li>
+<li>What happens if it fails in the middle?</li>
+<li>Is it isolated from other important queues?</li>
+<li>Can we retry it without creating duplicate data?</li>
+<li>Do we have enough logging to understand what happened?</li>
+<li>Does the job timeout match the real work it performs?</li>
+</ul>
+<p>For small projects, a simple queue setup is enough. For larger systems, queue isolation becomes important. A long-running import should not block password reset emails. A broken external API should not stop unrelated background work.</p>
+<p>Maintainability is not only about clean code. It is also about systems that behave predictably under pressure.</p>
+<h2 id="database-design-is-part-of-the-code-quality">Database design is part of the code quality</h2>
+<p>Laravel makes database work comfortable, but that does not mean the database should be treated as an implementation detail.</p>
+<p>A maintainable Laravel project needs database structures that match the real domain. Table names, relationships, indexes, constraints and migrations matter.</p>
+<p>I like when migrations tell a story. They should show how the system evolved. They should be safe to run, easy to understand and not full of surprises.</p>
+<p>I also look for good use of database constraints. Not everything should be protected only by application code. If a value must be unique, the database should know that. If a relation is required, the schema should reflect it.</p>
+<p>Good Laravel code with weak database design will eventually become painful.</p>
+<h2 id="testing-the-risky-parts-first">Testing the risky parts first</h2>
+<p>I do not believe every project needs 100% test coverage. But I strongly believe that risky business logic should be tested.</p>
+<p>For me, good tests protect confidence. They allow developers to change the system without being afraid of invisible side effects.</p>
+<p>The most valuable tests are often around:</p>
+<ul>
+<li>permissions and policies</li>
+<li>data imports</li>
+<li>billing or financial calculations</li>
+<li>state transitions</li>
+<li>API contracts</li>
+<li>complex queries</li>
+<li>queue jobs</li>
+<li>security-sensitive behaviour</li>
+</ul>
+<p>A maintainable test suite should be useful, not decorative. If tests are slow, fragile or too focused on implementation details, developers stop trusting them.</p>
+<p>The best tests describe behaviour.</p>
+<p>When a test fails, it should explain what part of the system no longer behaves as expected.</p>
+<h2 id="security-should-not-be-an-afterthought">Security should not be an afterthought</h2>
+<p>Security is easier to build in than to add later.</p>
+<p>In Laravel, many good defaults already exist: CSRF protection, password hashing, validation, signed URLs, policies, gates and encryption helpers. But the framework cannot protect a project from every bad decision.</p>
+<p>I pay attention to simple things:</p>
+<ul>
+<li>authorization checks near every sensitive action</li>
+<li>validation that matches real business rules</li>
+<li>no trust in user-controlled input</li>
+<li>careful handling of file uploads</li>
+<li>no secrets in repositories</li>
+<li>clear separation between internal and public data</li>
+<li>safe use of queues, commands and admin tools</li>
+<li>logging without leaking sensitive information</li>
+</ul>
+<p>Security-conscious development does not always mean complex security architecture. Often it means asking the right questions during normal development.</p>
+<p>Who is allowed to do this?</p>
+<p>Can this be abused?</p>
+<p>What happens if the input is unexpected?</p>
+<p>What data are we exposing?</p>
+<p>A maintainable project is one where security decisions are visible and repeatable.</p>
+<h2 id="devops-is-part-of-development">DevOps is part of development</h2>
+<p>I do not see DevOps as something separate from software development. The way a project runs locally, gets deployed, logs errors and handles configuration has a direct impact on maintainability.</p>
+<p>A project should be easy to start for a new developer. The local environment should be documented. Docker or DDEV setups should not feel like magic. Environment variables should be clear. Build steps should be predictable.</p>
+<p>The same applies to production.</p>
+<p>If something breaks, developers need enough information to understand the problem. Logs, health checks, queue monitoring, failed jobs and deployment history are not luxury features. They are part of operating software responsibly.</p>
+<p>A project that is hard to run will become hard to maintain.</p>
+<h2 id="naming-matters-more-than-people-think">Naming matters more than people think</h2>
+<p>Good naming is one of the cheapest ways to improve a codebase.</p>
+<p>A well-named class, method, job or database column reduces the need for comments. It helps developers build a mental model of the system.</p>
+<p>I prefer boring names over creative names. Boring names are usually easier to search, easier to discuss and easier to understand.</p>
+<p>For example, <code>ImportCustomerOrdersJob</code> is not exciting, but it tells me what it does. <code>ProcessDataJob</code> tells me almost nothing.</p>
+<p>Maintainable code is often boring in a good way.</p>
+<h2 id="comments-should-explain-why-not-what">Comments should explain why, not what</h2>
+<p>I do not mind comments. But I do not like comments that simply repeat the code.</p>
+<p>Useful comments explain context. They explain why something exists, why a workaround was necessary, or why a decision looks strange at first sight.</p>
+<p>The best comment is often the one that prevents a future developer from “cleaning up” something that was intentionally written that way.</p>
+<p>Code tells us what happens.</p>
+<p>Good comments tell us why.</p>
+<h2 id="ai-can-help-but-it-does-not-replace-understanding">AI can help, but it does not replace understanding</h2>
+<p>Today, AI tools can write code, generate tests, explain errors and help with refactoring. I use them, and I think they are becoming a normal part of modern development.</p>
+<p>But AI does not remove the need for engineering judgement.</p>
+<p>In a maintainable Laravel project, AI can help with speed. It can suggest structure, generate boilerplate and find possible issues. But the developer still needs to understand the domain, the risks, the production environment and the long-term consequences of a change.</p>
+<p>AI is useful when the developer stays responsible.</p>
+<p>The goal is not to generate more code.</p>
+<p>The goal is to build better systems with less unnecessary friction.</p>
+<h2 id="what-i-value-most">What I value most</h2>
+<p>When I look at a Laravel project, I do not expect perfection. Real projects are shaped by deadlines, changing priorities, legacy decisions and business pressure.</p>
+<p>What I value most is clarity.</p>
+<p>Can I understand the flow?</p>
+<p>Can I find the business rules?</p>
+<p>Can I change one part without breaking five others?</p>
+<p>Can I test the risky behaviour?</p>
+<p>Can I operate it in production?</p>
+<p>Can another developer continue the work without needing a private explanation?</p>
+<p>For me, that is maintainability.</p>
+<p>Not perfect architecture.</p>
+<p>Not unnecessary complexity.</p>
+<p>Just a project that stays understandable, reliable and safe to change over time.</p> </div> </article> </main> </body></html>
