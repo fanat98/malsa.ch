@@ -18,4 +18,13 @@ npm run build
 
 ## Deployment
 
-The site builds to `dist/` and can be deployed to GitHub Pages, Netlify, Vercel, Cloudflare Pages, or a static host.
+Every push to `main` triggers the GitHub Actions workflow in `.github/workflows/deploy.yml`.
+GitHub builds the Astro site and publishes the static output to the `deploy` branch.
+
+For a hosting provider with Git deployment but without Node.js, configure:
+
+```text
+Repository: git@github.com:fanat98/malsa.ch.git
+Branch: deploy
+Document root: repository root
+```
